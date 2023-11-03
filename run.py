@@ -1,17 +1,12 @@
-import sys
+#
+# https://www.tensorflow.org/tutorials/quickstart/beginner
+#
 
 # TensorFlow and tf.keras
 import tensorflow as tf
 
 print("TensorFlow version:", tf.__version__)
-
-# Helper libraries
-import numpy as np
-import matplotlib.pyplot as plt
-
 print(tf.__version__)
-
-# https://www.tensorflow.org/tutorials/quickstart/beginner
 
 # Load a dataset
 mnist = tf.keras.datasets.mnist
@@ -22,8 +17,6 @@ mnist = tf.keras.datasets.mnist
 # y_test: uint8 NumPy array of digit labels (integers in range 0-9)
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 x_train, x_test = x_train / 255.0, x_test / 255.0
-
-# sys.exit()
 
 print('load dataset completed')
 
