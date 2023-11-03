@@ -5,8 +5,8 @@ deps:
 run:
 	python run_basic.py
 
-runsave:
-	python run_save_model.py
+train:
+	python run_train_model_with_checkpoints.py
 
-runload:
+evaluate:
 	python run_load_model.py

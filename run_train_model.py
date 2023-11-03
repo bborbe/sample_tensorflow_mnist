@@ -2,6 +2,7 @@
 # https://www.tensorflow.org/tutorials/quickstart/beginner
 # https://www.tensorflow.org/tutorials/keras/save_and_load
 #
+
 import os
 
 # TensorFlow and tf.keras
@@ -21,22 +22,39 @@ mnist = tf.keras.datasets.mnist
 x_train, x_test = x_train / 255.0, x_test / 255.0
 
 print('load dataset completed')
-model = tf.keras.models.load_model(
-    'my_model.keras',
-    compile=False,
-)
 
-# Show the model architecture
+# Build a machine learning model
+
+model = tf.keras.models.Sequential([
+    tf.keras.layers.Flatten(input_shape=(28, 28)),
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dropout(0.2),
+    tf.keras.layers.Dense(10)
+])
+
 print(model.summary())
-print('load model complete')
+print('define model completed')
 
 loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+
+predictions = model(x_test[:1]).numpy()
+print(predictions)
+print('{0:.10f}'.format(loss_fn(y_test[:1], predictions).numpy()))
+print('print prediction of untrained model completed')
 
 # Configure compiler
 model.compile(optimizer='adam',
               loss=loss_fn,
               metrics=['accuracy'])
 print('configure compiler completed')
+
+# Train model, epochs is number of traing iterations
+model.fit(
+    x_train,
+    y_train,
+    epochs=3,
+)
+print('train model completed')
 
 predictions = model(x_test[:1]).numpy()
 print(predictions)
@@ -55,3 +73,7 @@ probability_model = tf.keras.Sequential([
 ])
 print(probability_model(x_test[:5]))
 print('print probabilities completed')
+
+# Save the entire model as a `.keras` zip archive.
+model.save('my_model.keras')
+print('save model completed')

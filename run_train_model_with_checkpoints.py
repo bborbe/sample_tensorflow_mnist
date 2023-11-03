@@ -1,6 +1,8 @@
 #
 # https://www.tensorflow.org/tutorials/quickstart/beginner
+# https://www.tensorflow.org/tutorials/keras/save_and_load
 #
+
 import os
 
 # TensorFlow and tf.keras
@@ -9,13 +11,16 @@ import tensorflow as tf
 print("TensorFlow version:", tf.__version__)
 print(tf.__version__)
 
-checkpoint_path = "training_1/cp.ckpt"
+# checkpoint_path = "checkpoints/cp.ckpt"
+checkpoint_path = "checkpoints/cp-{epoch:04d}.ckpt"
 checkpoint_dir = os.path.dirname(checkpoint_path)
 
 # Create a callback that saves the model's weights
-cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
-                                                 save_weights_only=True,
-                                                 verbose=1)
+cp_callback = tf.keras.callbacks.ModelCheckpoint(
+    filepath=checkpoint_path,
+    save_weights_only=True,
+    verbose=1,
+)
 
 # Load a dataset
 mnist = tf.keras.datasets.mnist
@@ -54,11 +59,22 @@ model.compile(optimizer='adam',
               metrics=['accuracy'])
 print('configure compiler completed')
 
+latest = tf.train.latest_checkpoint(checkpoint_dir)
+print('latest {}'.format(latest))
+if latest is not None:
+    model.load_weights(latest)
+    print('load weights completed')
+
+    predictions = model(x_test[:1]).numpy()
+    print(predictions)
+    print('{0:.10f}'.format(loss_fn(y_test[:1], predictions).numpy()))
+    print('print prediction of load weight model completed')
+
 # Train model, epochs is number of traing iterations
 model.fit(
     x_train,
     y_train,
-    epochs=10,
+    epochs=3,
     callbacks=[cp_callback],  # Pass callback to training
 )
 print('train model completed')
@@ -87,4 +103,3 @@ print('print checkpoints completed')
 # Save the entire model as a `.keras` zip archive.
 model.save('my_model.keras')
 print('save model completed')
-
